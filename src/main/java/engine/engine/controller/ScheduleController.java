@@ -34,9 +34,11 @@ public class ScheduleController {
 
             List<StockData.Item> items = stockEngineService.parseStockData(stockInfo);
             stockEngineService.saveStockData(items);
-            stockEngineService.updateStockOrder(items);
-
             log.info("***** scheduledStockEngine done *****");
+
+            log.info("***** updateStockOrder start *****");
+            stockEngineService.updateStockOrder(items);
+            log.info("***** updateStockOrder done *****");
         } catch (Exception e) {
             log.error("Error in scheduledStockEngine: {}", e.getMessage(), e);
         }

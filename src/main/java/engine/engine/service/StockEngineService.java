@@ -95,25 +95,30 @@ public class StockEngineService{
     }
 
     public void saveStockSevenAgo(List<StockData.Item> items) {
-        for (StockData.Item item : items) {
-            Stock stock = stockRepository.findByStockName(item.itmsNm);
-            if (stock == null) {
-                stock = new Stock();
-                stock.setStockName(item.itmsNm);
-                stock.setStockPrice(Integer.valueOf(item.clpr));
-                stock.setBasDt(item.basDt);
+        try {
+            for (StockData.Item item : items) {
+                Stock stock = stockRepository.findByStockName(item.itmsNm);
+                if (stock == null) {
+                    stock = new Stock();
+                    stock.setStockName(item.itmsNm);
+                    stock.setStockPrice(Integer.valueOf(item.clpr));
+                    stock.setBasDt(item.basDt);
 
-                stock.setVs(item.vs);
-                stock.setFltRt(item.fltRt);
-                stock.setMkp(item.mkp);
-                stock.setHipr(item.hipr);
-                stock.setLopr(item.lopr);
+                    stock.setVs(item.vs);
+                    stock.setFltRt(item.fltRt);
+                    stock.setMkp(item.mkp);
+                    stock.setHipr(item.hipr);
+                    stock.setLopr(item.lopr);
 
-                stockRepository.save(stock);
-            } else {
-                stock.setPriceLastWeek(Integer.valueOf(item.clpr));
-                stockRepository.save(stock);
+                    stockRepository.save(stock);
+                } else {
+                    stock.setPriceLastWeek(Integer.valueOf(item.clpr));
+                    stockRepository.save(stock);
+                }
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -125,14 +130,21 @@ public class StockEngineService{
     }
 
     public void updateStockOrder(List<StockData.Item> items) {
-        for (StockData.Item item : items) {
-            StockOrder stockOrder = stockOrderRepository.findByStockName(item.itmsNm);
-            if (null != stockOrder) {
-                stockOrder.setCurrentStockPrice(Integer.valueOf(item.clpr));
-                stockOrder.setCurrentTotalPrice(stockOrder.getCurrentStockPrice() * stockOrder.getStockCount());
-                stockOrderRepository.save(stockOrder);
+        try {
+            for (StockData.Item item : items) {
+                List<StockOrder> stockOrder = stockOrderRepository.findByStockName(item.itmsNm);
+                if (null != stockOrder) {
+                    for (StockOrder stock : stockOrder) {
+                        stock.setCurrentStockPrice(Integer.valueOf(item.clpr));
+                        stock.setCurrentTotalPrice(stock.getCurrentStockPrice() * stock.getStockCount());
+                        stockOrderRepository.save(stock);
+                    }
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
 }
