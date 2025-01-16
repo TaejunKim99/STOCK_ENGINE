@@ -89,6 +89,7 @@ public class StockEngineService{
                 stock.setMkp(item.mkp);
                 stock.setHipr(item.hipr);
                 stock.setLopr(item.lopr);
+
                 stockRepository.save(stock);
             }
         }
@@ -111,7 +112,7 @@ public class StockEngineService{
                     stock.setLopr(item.lopr);
 
                     stockRepository.save(stock);
-                } else {
+                } else if (null != item.clpr && !item.clpr.isEmpty()){
                     stock.setPriceLastWeek(Integer.valueOf(item.clpr));
                     stockRepository.save(stock);
                 }
@@ -125,7 +126,7 @@ public class StockEngineService{
 
     public String lastDays(Integer days) {
         LocalDate now = LocalDate.now();
-        LocalDate localDate = now.minusDays(7);
+        LocalDate localDate = now.minusDays(days);
         return localDate.toString().replaceAll("-", "");
     }
 
